@@ -1,0 +1,116 @@
+:root {
+  --tinta: #14161a;
+  --tenue: #5b6472;
+  --fondo: #ffffff;
+  --linea: #e3e6eb;
+  --acento: #1f3864;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --tinta: #eef1f5;
+    --tenue: #a3adbb;
+    --fondo: #14161a;
+    --linea: #2a2f38;
+    --acento: #8fb0e8;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+.contenedor {
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tenue);
+}
+
+h1 {
+  margin: 0.35rem 0 0;
+  font-size: 1.9rem;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.resumen {
+  margin: 0.5rem 0 0;
+  color: var(--tenue);
+}
+
+.pasos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--linea);
+  border: 1px solid var(--linea);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.pasos li {
+  display: flex;
+  gap: 0.9rem;
+  padding: 1rem;
+  background: var(--fondo);
+}
+
+.paso {
+  flex: none;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--acento);
+  color: var(--fondo);
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.pasos h2 {
+  margin: 0 0 0.2rem;
+  font-size: 1rem;
+}
+
+.pasos p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--tenue);
+}
+
+.nota {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--tenue);
+}
+
+code {
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.85em;
+}

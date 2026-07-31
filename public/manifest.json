@@ -1,0 +1,13 @@
+{
+  "name": "Censo IQBF — Universidad de Lima",
+  "short_name": "Censo IQBF",
+  "description": "Captura en campo del censo físico de insumos químicos fiscalizados.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#1f3864",
+  "lang": "es-PE",
+  "icons": []
+}
