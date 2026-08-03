@@ -8,13 +8,12 @@ en `DISENO.md` del repositorio de backend.
 
 ## Estado
 
-**Andamio listo, PWA pendiente.** El Sprint 1 fue backend: esquema, precarga del
-Excel, catálogo de referencia y generación de etiquetas QR. Este repositorio
-existe desde ahora para que la estructura y el despliegue queden fijados, y
-compila y despliega tal cual está.
+**Sprint 3 cerrado: el recorrido de captura funciona de punta a punta.** Entrar,
+escanear, pesar, cerrar la botella y volver a empezar, con la cola offline
+sosteniendo todo lo que no se pudo enviar.
 
-Las tres pantallas llegan en el Sprint 3. Mientras tanto el censo avanza con el
-archivo `Censo_IQBF_v3_TRAZABLE` y las etiquetas ya impresas.
+Pendientes del Sprint 4: zonas y cierre de nivel, conflictos con evidencia
+fotográfica y tablero de avance. Sus carpetas están creadas y vacías.
 
 ## Puesta en marcha
 
@@ -23,7 +22,16 @@ npm install
 npm run dev        # http://localhost:5174
 npm run build
 npm run typecheck
+npm test           # 20 pruebas
 ```
+
+Las pruebas cubren la cola offline y la clasificación de errores del cliente,
+que es donde se decide si una pesada se conserva o se da por perdida. Corren en
+Node con `fake-indexeddb`, sin navegador ni backend levantado.
+
+Lo que las pruebas **no** cubren es la cámara: `getUserMedia` y
+`BarcodeDetector` no existen fuera de un navegador real. Esa parte se verifica a
+mano en el teléfono, contra las etiquetas ya impresas.
 
 El servidor de desarrollo redirige `/api` al backend en `http://127.0.0.1:8000`.
 Se cambia con `VITE_API_URL`.
@@ -35,17 +43,22 @@ entre sí y comparten solo lo que vive en `shared`.
 
 ```
 src/
-├── api/                 cliente generado del OpenAPI del backend
-├── app/                 cascaron, enrutado y estilos base
+├── api/                 cliente HTTP y tipos del contrato del backend
+├── app/                 cascarón, máquina de pasos y barra de estado
 ├── features/
-│   ├── escaneo/         pantalla 1: QR y desambiguación de códigos
-│   ├── pesada/          pantalla 2: peso en gramos y semáforo
-│   ├── zonas/           pantalla 3: ubicación, condición y cierre de nivel
-│   ├── conflictos/      identidad dudosa y evidencia fotográfica
-│   └── avance/          tablero de indicadores
+│   ├── sesion/          entrar y sostener la sesión
+│   ├── escaneo/         paso 1: QR y desambiguación de códigos
+│   ├── pesada/          paso 2: peso en gramos
+│   ├── cierre/          paso 3: posición, condición y observación
+│   ├── resultado/       veredicto del servidor y qué hacer con él
+│   ├── zonas/           (Sprint 4) cierre de nivel
+│   ├── conflictos/      (Sprint 4) identidad dudosa y evidencia fotográfica
+│   └── avance/          (Sprint 4) tablero de indicadores
 └── shared/
     ├── offline/         cola en IndexedDB con client_uuid e idempotencia
-    └── qr/              BarcodeDetector con jsQR empaquetado como respaldo
+    ├── qr/              BarcodeDetector con jsQR empaquetado como respaldo
+    └── ui/              piezas comunes pensadas para una sola mano
+tests/                   cola offline y clasificación de errores
 ```
 
 ## Decisiones que condicionan la implementación
@@ -61,6 +74,14 @@ una red que en el sótano no existe, no sirve.
 generado en el cliente antes de encolarse. El servidor tiene
 `UNIQUE (client_uuid)`, así que un reintento duplicado es inofensivo. La app
 muestra siempre cuántos registros quedan por sincronizar.
+
+**Un rechazo no es lo mismo que un tropiezo.** La cola solo da por rechazada
+una pesada cuando el servidor juzgó su contenido (envase en conflicto, peso
+fuera de rango). Un 401 no cuenta: una jornada larga en el sótano puede vencer
+el token con pesadas todavía encoladas, y darlas por rechazadas por eso sería
+descartar trabajo de campo válido. Tampoco se borra lo rechazado —queda
+visible—, porque perder en silencio una pesada que costó bajar al sótano es
+peor que mostrar un error.
 
 **El semáforo se muestra, no se calcula.** Lo decide el servidor. Con clientes
 offline y versiones distintas de la app, el mismo peso daría veredictos

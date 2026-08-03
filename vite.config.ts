@@ -1,8 +1,15 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { fileURLToPath, URL } from "node:url";
 
 export default defineConfig({
+  test: {
+    // La cola vive en IndexedDB; fake-indexeddb la da sin navegador.
+    environment: "node",
+    setupFiles: ["./tests/entorno.ts"],
+    include: ["tests/**/*.test.ts"],
+  },
   plugins: [react()],
   resolve: {
     alias: {
