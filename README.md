@@ -12,6 +12,11 @@ Consume la API de `Censo-IQBF-ULIMA_Back`.
 | [`specs/`](specs/) | **Empieza aquí si eres nuevo.** Contexto, convenciones, contrato con el backend y las dos partes difíciles |
 | [`AUDITORIA.md`](AUDITORIA.md) | Auditoría del 2026-08-03: tres fallos corregidos y lo que queda abierto |
 
+El despliegue (Neon + Render + Vercel) está documentado en `DESPLIEGUE.md` del
+repositorio de backend. Aquí solo hace falta la variable `VITE_API_URL`, que es
+**de construcción**: Vite la incrusta en el paquete, así que cambiarla obliga a
+redesplegar.
+
 El diseño del sistema completo, los invariantes y el esquema de la base están en
 el repositorio del backend (`DISENO.md`, `specs/`, `docs/BASE_DE_DATOS.md`).
 
