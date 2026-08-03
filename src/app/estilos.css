@@ -250,6 +250,34 @@ h1 {
   background: #16181d;
 }
 
+/* Pie del visor mientras la camara esta encendida. Dice que el lector
+   trabaja solo y da la unica salida para apagarlo. */
+.visor__pie {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: linear-gradient(to top, rgba(10, 12, 15, 0.88), transparent);
+}
+
+.visor__pista {
+  margin: 0;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #f2f4f7;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.visor__pie .boton {
+  width: auto;
+  min-width: 11rem;
+}
+
 .visor__marco {
   position: absolute;
   width: 62%;

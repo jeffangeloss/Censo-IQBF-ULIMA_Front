@@ -85,7 +85,19 @@ export function Escaneo({
             </Boton>
           </div>
         ) : (
-          <div className="visor__marco" aria-hidden="true" />
+          <>
+            <div className="visor__marco" aria-hidden="true" />
+            {/* Sin esto la pantalla parece esperar un boton de disparo que no
+                existe: el lector no toma fotos, reconoce el codigo solo. */}
+            <div className="visor__pie">
+              <p className="visor__pista" role="status">
+                Buscando el codigo… no hace falta tomar foto
+              </p>
+              <Boton type="button" variante="secundario" onClick={detener}>
+                Apagar camara
+              </Boton>
+            </div>
+          </>
         )}
       </div>
 
