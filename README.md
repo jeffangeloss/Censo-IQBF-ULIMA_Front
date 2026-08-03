@@ -3,8 +3,17 @@
 PWA de captura en campo del censo físico de insumos químicos fiscalizados del
 Laboratorio de Docimasia, Universidad de Lima.
 
-Consume la API de `[Censo]IQBF-ULIMA_Back`. El diseño completo del sistema está
-en `DISENO.md` del repositorio de backend.
+Consume la API de `Censo-IQBF-ULIMA_Back`.
+
+## Documentación
+
+| Documento | Qué contiene |
+|---|---|
+| [`specs/`](specs/) | **Empieza aquí si eres nuevo.** Contexto, convenciones, contrato con el backend y las dos partes difíciles |
+| [`AUDITORIA.md`](AUDITORIA.md) | Auditoría del 2026-08-03: tres fallos corregidos y lo que queda abierto |
+
+El diseño del sistema completo, los invariantes y el esquema de la base están en
+el repositorio del backend (`DISENO.md`, `specs/`, `docs/BASE_DE_DATOS.md`).
 
 ## Estado
 
