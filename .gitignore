@@ -17,3 +17,7 @@ Thumbs.db
 
 .vercel
 .env*
+
+# Artefactos de herramientas de agente, no del proyecto
+skills-lock.json
+.claude/
