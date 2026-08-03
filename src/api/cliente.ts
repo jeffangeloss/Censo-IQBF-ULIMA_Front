@@ -7,13 +7,21 @@
  */
 
 import type {
+  Avance,
   BusquedaPorCodigo,
+  CierreResultado,
+  Conflicto,
   EnvaseDetalle,
+  EstadoConflicto,
+  Evidencia,
   Pesada,
   PesadaEntrada,
   Problema,
   SesionIniciada,
+  TipoConflicto,
   Usuario,
+  ZonaDetalle,
+  ZonaResumen,
 } from "@/api/tipos";
 
 const BASE = import.meta.env.VITE_API_URL ?? "";
@@ -79,11 +87,15 @@ async function pedir<T>(
   const token = leerToken();
   let respuesta: Response;
 
+  // Una subida de foto va como multipart y el navegador tiene que poner el
+  // Content-Type con su boundary. Fijarlo aqui romperia el envio.
+  const esFormulario = opciones.body instanceof FormData;
+
   try {
     respuesta = await fetch(`${BASE}${ruta}`, {
       ...opciones,
       headers: {
-        "Content-Type": "application/json",
+        ...(esFormulario ? {} : { "Content-Type": "application/json" }),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...opciones.headers,
       },
@@ -166,4 +178,110 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ codigo, cara: cara ?? null }),
     }),
+
+  // ---------------------------------------------------------------- zonas
+
+  zonas: () => pedir<ZonaResumen[]>("/api/zonas"),
+
+  zona: (id: number) => pedir<ZonaDetalle>(`/api/zonas/${id}`),
+
+  crearZona: (gabinete: string, nivel: string) =>
+    pedir<ZonaDetalle>("/api/zonas", {
+      method: "POST",
+      body: JSON.stringify({ gabinete, nivel }),
+    }),
+
+  asignarEsperados: (id: number, ids_envase: number[]) =>
+    pedir<ZonaDetalle>(`/api/zonas/${id}/esperados`, {
+      method: "POST",
+      body: JSON.stringify({ ids_envase }),
+    }),
+
+  cerrarZona: (id: number, conteo_fisico: number, observacion?: string) =>
+    pedir<CierreResultado>(`/api/zonas/${id}/cerrar`, {
+      method: "POST",
+      body: JSON.stringify({ conteo_fisico, observacion: observacion || null }),
+    }),
+
+  reabrirZona: (id: number, motivo: string) =>
+    pedir<ZonaDetalle>(`/api/zonas/${id}/reabrir`, {
+      method: "POST",
+      body: JSON.stringify({ motivo }),
+    }),
+
+  // ----------------------------------------------------------- conflictos
+
+  conflictos: (soloAbiertos = false) =>
+    pedir<Conflicto[]>(`/api/conflictos?abiertos=${soloAbiertos}`),
+
+  abrirConflicto: (datos: {
+    tipo: TipoConflicto;
+    id_envase?: number | null;
+    codigo_a?: string | null;
+    codigo_b?: string | null;
+    descripcion: string;
+    id_evidencia?: number | null;
+  }) =>
+    pedir<Conflicto>("/api/conflictos", {
+      method: "POST",
+      body: JSON.stringify(datos),
+    }),
+
+  resolverConflicto: (
+    id: number,
+    estado: EstadoConflicto,
+    resolucion: string,
+    id_evidencia?: number | null,
+  ) =>
+    pedir<Conflicto>(`/api/conflictos/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify({
+        estado,
+        resolucion,
+        id_evidencia: id_evidencia ?? null,
+      }),
+    }),
+
+  // ----------------------------------------------------------- evidencias
+
+  subirEvidencia: (imagen: Blob, descripcion?: string) => {
+    const formulario = new FormData();
+    formulario.append("archivo", imagen, "evidencia.jpg");
+    if (descripcion) formulario.append("descripcion", descripcion);
+    return pedir<Evidencia>("/api/evidencias", {
+      method: "POST",
+      body: formulario,
+    });
+  },
+
+  /**
+   * Trae la foto y devuelve una URL de objeto para ponerla en un <img>.
+   *
+   * No se puede apuntar el <img> directo al endpoint: el navegador no manda
+   * la cabecera de sesion en la carga de una imagen y el servidor contestaria
+   * 401. Quien la use debe revocar la URL al desmontar.
+   */
+  async evidenciaComoUrl(id: number): Promise<string> {
+    const token = leerToken();
+    let respuesta: Response;
+    try {
+      respuesta = await fetch(`${BASE}/api/evidencias/${id}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+    } catch {
+      throw new ErrorDeRed();
+    }
+    if (!respuesta.ok) {
+      throw new ErrorApi(
+        respuesta.status,
+        "EVIDENCIA_NO_DISPONIBLE",
+        "No se pudo cargar la foto.",
+      );
+    }
+    return URL.createObjectURL(await respuesta.blob());
+  },
+
+  // -------------------------------------------------------------- tablero
+
+  avance: () => pedir<Avance>("/api/avance"),
 };

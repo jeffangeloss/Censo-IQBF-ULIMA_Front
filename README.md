@@ -12,8 +12,12 @@ en `DISENO.md` del repositorio de backend.
 escanear, pesar, cerrar la botella y volver a empezar, con la cola offline
 sosteniendo todo lo que no se pudo enviar.
 
-Pendientes del Sprint 4: zonas y cierre de nivel, conflictos con evidencia
-fotográfica y tablero de avance. Sus carpetas están creadas y vacías.
+**Sprint 4 cerrado:** barrido por niveles, conflictos con evidencia fotográfica
+y tablero de avance. Se alcanzan desde una barra inferior —abajo porque la app
+se opera con una mano y arriba no llega el pulgar— mientras el recorrido de
+captura sigue siendo lineal.
+
+Pendiente: la exportación (S5), que es trabajo de backend.
 
 ## Puesta en marcha
 
@@ -22,7 +26,7 @@ npm install
 npm run dev        # http://localhost:5174
 npm run build
 npm run typecheck
-npm test           # 20 pruebas
+npm test           # 30 pruebas
 ```
 
 Las pruebas cubren la cola offline y la clasificación de errores del cliente,
@@ -51,14 +55,15 @@ src/
 │   ├── pesada/          paso 2: peso en gramos
 │   ├── cierre/          paso 3: posición, condición y observación
 │   ├── resultado/       veredicto del servidor y qué hacer con él
-│   ├── zonas/           (Sprint 4) cierre de nivel
-│   ├── conflictos/      (Sprint 4) identidad dudosa y evidencia fotográfica
-│   └── avance/          (Sprint 4) tablero de indicadores
+│   ├── zonas/           barrido por nivel y cierre con conteo físico
+│   ├── conflictos/      identidad dudosa y evidencia fotográfica
+│   └── avance/          tablero: qué falta para poder exportar
 └── shared/
     ├── offline/         cola en IndexedDB con client_uuid e idempotencia
     ├── qr/              BarcodeDetector con jsQR empaquetado como respaldo
+    ├── foto/            captura de evidencia y visor con sesión
     └── ui/              piezas comunes pensadas para una sola mano
-tests/                   cola offline y clasificación de errores
+tests/                   cola offline, errores y cliente del barrido
 ```
 
 ## Decisiones que condicionan la implementación
@@ -82,6 +87,16 @@ el token con pesadas todavía encoladas, y darlas por rechazadas por eso sería
 descartar trabajo de campo válido. Tampoco se borra lo rechazado —queda
 visible—, porque perder en silencio una pesada que costó bajar al sótano es
 peor que mostrar un error.
+
+**Cerrar un nivel avisa antes, no después.** La pantalla dice cuántas botellas
+quedarán declaradas *no encontradas* antes de que el supervisor confirme. Una
+confirmación que no adelanta su efecto no es una confirmación, es un trámite.
+
+**La foto se trae con la sesión.** Un `<img src>` apuntado al endpoint no manda
+la cabecera de autorización y recibiría un 401, así que la imagen se descarga
+con `fetch` y se convierte en URL de objeto. Y la subida es la única petición
+que **no** declara `Content-Type`: en multipart lo pone el navegador con su
+*boundary*, y fijarlo a mano rompe el envío sin dar un error legible.
 
 **El semáforo se muestra, no se calcula.** Lo decide el servidor. Con clientes
 offline y versiones distintas de la app, el mismo peso daría veredictos
