@@ -158,6 +158,8 @@ export interface EnvaseEnZona {
   estado: EstadoEnvase;
   insumo_texto: string | null;
   numero_lote: string | null;
+  /** Códigos legados vigentes. Sin etiqueta pegada son lo único legible. */
+  codigos: string[];
 }
 
 export interface ZonaDetalle extends ZonaResumen {
@@ -198,6 +200,8 @@ export interface Conflicto {
   id_envase: number | null;
   id_fisico: string | null;
   insumo_texto: string | null;
+  /** Códigos legados del envase, no los del conflicto. */
+  codigos: string[];
   codigo_a: string | null;
   codigo_b: string | null;
   descripcion: string;

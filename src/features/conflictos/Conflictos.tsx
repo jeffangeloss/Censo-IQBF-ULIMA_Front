@@ -12,6 +12,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ErrorApi, ErrorDeRed, api } from "@/api/cliente";
 import type { Conflicto, EstadoConflicto } from "@/api/tipos";
 import { useSesion } from "@/features/sesion/Sesion";
+import { nombrarEnvase } from "@/shared/envase";
 import { CapturaFoto } from "@/shared/foto/CapturaFoto";
 import { VerFoto } from "@/shared/foto/VerFoto";
 import { Aviso, Boton, Cargando, Etiqueta, Opciones } from "@/shared/ui/componentes";
@@ -98,10 +99,9 @@ export function Conflictos() {
                   {TIPOS[conflicto.tipo] ?? conflicto.tipo}
                 </span>
                 <span className="nota">
-                  {conflicto.id_fisico ??
-                    (conflicto.id_envase
-                      ? `Envase ${conflicto.id_envase}`
-                      : "Sin botella asociada")}
+                  {conflicto.id_envase
+                    ? nombrarEnvase(conflicto)
+                    : "Sin botella asociada"}
                   {conflicto.codigo_a && conflicto.codigo_b
                     ? ` · ${conflicto.codigo_a} / ${conflicto.codigo_b}`
                     : ""}

@@ -23,6 +23,7 @@ import { Pesada, type BorradorPesada } from "@/features/pesada/Pesada";
 import { Resultado, type ResultadoPesada } from "@/features/resultado/Resultado";
 import { ProveedorSesion } from "@/features/sesion/Sesion";
 import { Zonas } from "@/features/zonas/Zonas";
+import { nombrarEnvase } from "@/shared/envase";
 import { encolar, nuevoUuid } from "@/shared/offline/cola";
 import { useCola } from "@/shared/offline/useCola";
 import { Aviso } from "@/shared/ui/componentes";
@@ -113,8 +114,7 @@ function Censo({ cola }: { cola: ReturnType<typeof useCola> }) {
 
     // Se guarda en el telefono ANTES de intentar enviarlo. Si el envio falla,
     // el dato ya esta a salvo: nunca se pierde una pesada por falta de senal.
-    const etiqueta =
-      envase.id_fisico ?? envase.codigos[0] ?? `Envase ${envase.id_envase}`;
+    const etiqueta = nombrarEnvase(envase);
     await encolar(cuerpo, etiqueta);
 
     try {

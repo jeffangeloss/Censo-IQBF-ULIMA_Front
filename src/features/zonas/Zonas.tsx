@@ -13,6 +13,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ErrorApi, ErrorDeRed, api } from "@/api/cliente";
 import type { CierreResultado, ZonaDetalle, ZonaResumen } from "@/api/tipos";
 import { useSesion } from "@/features/sesion/Sesion";
+import { nombrarEnvase } from "@/shared/envase";
 import {
   Aviso,
   Boton,
@@ -321,7 +322,7 @@ function Nivel({
         <ul className="lista">
           {zona.envases.map((envase) => (
             <li key={envase.id_envase} className="lista__fila">
-              <span>{envase.id_fisico ?? `Envase ${envase.id_envase}`}</span>
+              <span>{nombrarEnvase(envase)}</span>
               <span className="nota">{envase.insumo_texto}</span>
               <EstadoEnvase estado={envase.estado} />
             </li>

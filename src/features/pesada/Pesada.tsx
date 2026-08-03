@@ -14,6 +14,7 @@
 import { useMemo, useState } from "react";
 
 import type { EnvaseDetalle } from "@/api/tipos";
+import { nombrarEnvase, sinEtiqueta } from "@/shared/envase";
 import { Aviso, Boton, Campo } from "@/shared/ui/componentes";
 
 export interface BorradorPesada {
@@ -163,9 +164,12 @@ export function Pesada({
 export function FichaEnvase({ envase }: { envase: EnvaseDetalle }) {
   return (
     <div className="envase">
-      <p className="envase__titulo">
-        {envase.id_fisico ?? "Sin etiqueta fisica"}
-      </p>
+      <p className="envase__titulo">{nombrarEnvase(envase)}</p>
+      {sinEtiqueta(envase) ? (
+        <p className="nota">
+          Sin etiqueta física pegada. Se identifica por su código legado.
+        </p>
+      ) : null}
       <p className="envase__insumo">
         {envase.insumo_texto ?? "Insumo sin identificar"}
       </p>

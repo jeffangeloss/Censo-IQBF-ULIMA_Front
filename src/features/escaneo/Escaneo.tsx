@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 
 import { ErrorDeRed, api } from "@/api/cliente";
 import type { BusquedaPorCodigo, EnvaseDetalle, EnvaseResumen } from "@/api/tipos";
+import { nombrarEnvase, sinEtiqueta } from "@/shared/envase";
 import { useEscaner } from "@/shared/qr/useEscaner";
 import {
   Aviso,
@@ -166,7 +167,7 @@ function Resultados({
           <li key={envase.id_envase}>
             <button className="tarjeta" onClick={() => alAbrir(envase)}>
               <div className="tarjeta__fila">
-                <strong>{envase.id_fisico ?? "Sin etiqueta"}</strong>
+                <strong>{nombrarEnvase(envase)}</strong>
                 <EstadoEnvase estado={envase.estado} />
               </div>
               <p className="tarjeta__detalle">
@@ -174,6 +175,7 @@ function Resultados({
                 {envase.numero_lote ? ` · lote ${envase.numero_lote}` : ""}
               </p>
               <p className="tarjeta__meta">
+                {sinEtiqueta(envase) ? "sin etiqueta pegada · " : ""}
                 {envase.codigos.join(" · ") || "sin codigos legados"}
               </p>
             </button>

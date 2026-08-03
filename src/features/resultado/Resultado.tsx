@@ -6,6 +6,7 @@
  */
 
 import type { EnvaseDetalle, Pesada } from "@/api/tipos";
+import { nombrarEnvase } from "@/shared/envase";
 import { Aviso, Boton, Semaforo } from "@/shared/ui/componentes";
 
 export type ResultadoPesada =
@@ -36,7 +37,7 @@ export function Resultado({
       <h2 className="paso-titulo">Listo</h2>
 
       <p className="envase__titulo">
-        {envase.id_fisico ?? envase.codigos[0] ?? `Envase ${envase.id_envase}`}
+        {nombrarEnvase(envase)}
       </p>
 
       {resultado.estado === "enviada" ? (
