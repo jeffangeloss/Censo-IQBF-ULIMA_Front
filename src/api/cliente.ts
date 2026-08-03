@@ -24,7 +24,14 @@ import type {
   ZonaResumen,
 } from "@/api/tipos";
 
-const BASE = import.meta.env.VITE_API_URL ?? "";
+// Se recorta y se le quita la barra final a proposito. El valor sale de un
+// panel de despliegue, donde es facil que arrastre un espacio o una marca BOM
+// invisible; si eso llega hasta aqui, la URL deja de ser absoluta y el
+// navegador la resuelve contra el propio dominio, con un 405 como unica pista.
+const BASE = (import.meta.env.VITE_API_URL ?? "")
+  .replace(/^﻿/, "")
+  .trim()
+  .replace(/\/+$/, "");
 const CLAVE_TOKEN = "censo.token";
 
 /** El servidor contesto con un error. Trae el codigo del contrato. */
